@@ -7,11 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Ecomm19032025
+namespace Ecomm19032025.AdminManage
 {
 
 
-    public partial class login
+    public partial class AdminManage
     {
 
         /// <summary>
@@ -24,39 +24,48 @@ namespace Ecomm19032025
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// txtuser control.
+        /// btnManageProducts control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtuser;
+        protected global::System.Web.UI.WebControls.Button btnManageProducts;
 
         /// <summary>
-        /// txtpass control.
+        /// btnManageOrders control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtpass;
+        protected global::System.Web.UI.WebControls.Button btnManageOrders;
 
         /// <summary>
-        /// btnlgn control.
+        /// btnManageUsers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnlgn;
+        protected global::System.Web.UI.WebControls.Button btnManageUsers;
 
         /// <summary>
-        /// LtlMsg control.
+        /// btnManageCategories control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal LtlMsg;
+        protected global::System.Web.UI.WebControls.Button btnManageCategories;
+
+        /// <summary>
+        /// btnLogout control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnLogout;
     }
 }

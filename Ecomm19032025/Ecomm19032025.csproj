@@ -67,12 +67,36 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AdminManage\AdminManage.aspx" />
+    <Content Include="AdminManage\default.aspx" />
     <Content Include="default.aspx" />
     <Content Include="Error.aspx" />
     <Content Include="login.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminManage\AdminManage.aspx.cs">
+      <DependentUpon>AdminManage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AdminManage\AdminManage.aspx.designer.cs">
+      <DependentUpon>AdminManage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AdminManage\default.aspx.cs">
+      <DependentUpon>default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AdminManage\default.aspx.designer.cs">
+      <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="app_code\BLL\Category.cs" />
+    <Compile Include="app_code\BLL\Order.cs" />
+    <Compile Include="app_code\BLL\Product.cs" />
+    <Compile Include="app_code\BLL\Users.cs" />
+    <Compile Include="app_code\DAL\CategoryDAL.cs" />
+    <Compile Include="app_code\DAL\UsersDAL.cs" />
+    <Compile Include="app_code\DAL\ProductDAL.cs" />
+    <Compile Include="app_code\DAL\OrderDAL.cs" />
     <Compile Include="default.aspx.cs">
       <DependentUpon>default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -104,6 +128,9 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
