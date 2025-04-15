@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using DAL;
 
 namespace BLL
 {
@@ -14,8 +13,25 @@ namespace BLL
         public string Address { get; set; }
         public string Phone { get; set; }
 
+        public static Users GetByID(int uid)
+        {
+            return UserDAL.GetByID(uid);
+        }
 
+        public static List<Users> GetAll()
+        {
+            return UserDAL.GetAll();
+        }
 
+        public static int DeleteByID(int uid)
+        {
+            return UserDAL.DeleteByID(uid);
+        }
 
+        public int Save()
+        {
+            UserDAL.Save(this);
+            return Uid;
+        }
     }
 }

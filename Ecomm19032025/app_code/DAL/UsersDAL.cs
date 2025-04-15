@@ -1,117 +1,101 @@
 ﻿using BLL;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
+using System.Data;
+using DATA;
+
 namespace DAL
 {
     public class UserDAL
     {
-        private static readonly string ConnStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\EcommDB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True";
-
         public static Users GetByID(int uid)
         {
-            using (SqlConnection Conn = new SqlConnection(ConnStr))
+            DbContext db = new DbContext();
+            string Sql = $"SELECT * FROM T.User WHERE Uid = {uid}";
+            DataTable dt = db.Execute(Sql);
+            Users tmp = null;
+
+            if (dt.Rows.Count > 0)
             {
-                Conn.Open();
-                string Sql = "SELECT * FROM T.User WHERE Uid = @Uid";
-                SqlCommand cmd = new SqlCommand(Sql, Conn);
-                cmd.Parameters.AddWithValue("@Uid", uid);
-                SqlDataReader Dr = cmd.ExecuteReader();
-                Users tmp = null;
-                if (Dr.Read())
+                tmp = new Users()
                 {
-                    tmp = new Users()
-                    {
-                        Uid = (int)Dr["Uid"],
-                        Fname = Dr["Fname"].ToString(),
-                        Email = Dr["Email"].ToString(),
-                        Pass = Dr["Pass"].ToString(),
-                        Address = Dr["Address"].ToString(),
-                        Phone = Dr["Phone"].ToString()
-                    };
-                }
-                return tmp;
+                    Uid = (int)dt.Rows[0]["Uid"],
+                    Fname = dt.Rows[0]["Fname"].ToString(),
+                    Email = dt.Rows[0]["Email"].ToString(),
+                    Pass = dt.Rows[0]["Pass"].ToString(),
+                    Address = dt.Rows[0]["Address"].ToString(),
+                    Phone = dt.Rows[0]["Phone"].ToString()
+                };
             }
+
+            db.Close();
+            return tmp;
         }
 
         public static List<Users> GetAll()
         {
+            DbContext db = new DbContext();
+            string Sql = "SELECT * FROM T.User";
+            DataTable dt = db.Execute(Sql);
             List<Users> users = new List<Users>();
-            using (SqlConnection Conn = new SqlConnection(ConnStr))
+
+            foreach (DataRow row in dt.Rows)
             {
-                Conn.Open();
-                string Sql = "SELECT * FROM T.User";
-                SqlCommand cmd = new SqlCommand(Sql, Conn);
-                SqlDataReader Dr = cmd.ExecuteReader();
-                while (Dr.Read())
+                Users tmp = new Users()
                 {
-                    users.Add(new Users()
-                    {
-                        Uid = (int)Dr["Uid"],
-                        Fname = Dr["Fname"].ToString(),
-                        Email = Dr["Email"].ToString(),
-                        Pass = Dr["Pass"].ToString(),
-                        Address = Dr["Address"].ToString(),
-                        Phone = Dr["Phone"].ToString()
-                    });
-                }
+                    Uid = (int)row["Uid"],
+                    Fname = row["Fname"].ToString(),
+                    Email = row["Email"].ToString(),
+                    Pass = row["Pass"].ToString(),
+                    Address = row["Address"].ToString(),
+                    Phone = row["Phone"].ToString()
+                };
+                users.Add(tmp);
             }
+
+            db.Close();
             return users;
         }
 
         public static void Save(Users u)
         {
-            using (SqlConnection Conn = new SqlConnection(ConnStr))
-            {
-                Conn.Open();
-                string Sql = "INSERT INTO T.User (Fname, Email, Pass, Address, Phone) VALUES (@Fname, @Email, @Pass, @Address, @Phone)";
-                SqlCommand cmd = new SqlCommand(Sql, Conn);
-                cmd.Parameters.AddWithValue("@Fname", u.Fname);
-                cmd.Parameters.AddWithValue("@Email", u.Email);
-                cmd.Parameters.AddWithValue("@Pass", u.Pass);
-                cmd.Parameters.AddWithValue("@Address", u.Address);
-                cmd.Parameters.AddWithValue("@Phone", u.Phone);
-                cmd.ExecuteNonQuery();
-            }
-        }
+            DbContext db = new DbContext();
+            string Sql;
 
-        public static void Update(Users u)
-        {
-            using (SqlConnection Conn = new SqlConnection(ConnStr))
+            if (u.Uid == -1)
             {
-                Conn.Open();
-                string Sql = "UPDATE T.User SET Fname = @Fname, Email = @Email, Pass = @Pass, Address = @Address, Phone = @Phone WHERE Uid = @Uid";
-                SqlCommand cmd = new SqlCommand(Sql, Conn);
-                cmd.Parameters.AddWithValue("@Fname", u.Fname);
-                cmd.Parameters.AddWithValue("@Email", u.Email);
-                cmd.Parameters.AddWithValue("@Pass", u.Pass);
-                cmd.Parameters.AddWithValue("@Address", u.Address);
-                cmd.Parameters.AddWithValue("@Phone", u.Phone);
-                cmd.Parameters.AddWithValue("@Uid", u.Uid);
-                cmd.ExecuteNonQuery();
+                Sql = $"INSERT INTO T.User (Fname, Email, Pass, Address, Phone) " +
+                      $"VALUES (N'{u.Fname}', N'{u.Email}', N'{u.Pass}', N'{u.Address}', N'{u.Phone}')";
             }
+            else
+            {
+                Sql = $"UPDATE T.User SET " +
+                      $"Fname = N'{u.Fname}', " +
+                      $"Email = N'{u.Email}', " +
+                      $"Pass = N'{u.Pass}', " +
+                      $"Address = N'{u.Address}', " +
+                      $"Phone = N'{u.Phone}' " +
+                      $"WHERE Uid = {u.Uid}";
+            }
+
+            db.ExecuteNonQuery(Sql);
+
+            if (u.Uid == -1)
+            {
+                Sql = $"SELECT MAX(Uid) FROM T.User WHERE Email = N'{u.Email}'";
+                u.Uid = (int)db.ExecuteScalar(Sql);
+            }
+
+            db.Close();
         }
 
         public static int DeleteByID(int uid)
         {
-            string ConnStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\EcommDB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True";
-            using (SqlConnection Conn = new SqlConnection(ConnStr))
-            {
-                Conn.Open();
-                string Sql = "DELETE FROM T.User WHERE Uid = @Uid";
-                SqlCommand cmd = new SqlCommand(Sql, Conn);
-                cmd.Parameters.AddWithValue("@Uid", uid);
-                int rowsAffected = cmd.ExecuteNonQuery();
-                Conn.Close();
-
-                if (rowsAffected > 0)
-                    return 1;
-                else
-                    return 0;
-            }
+            DbContext db = new DbContext();
+            string Sql = $"DELETE FROM T.User WHERE Uid = {uid}";
+            int retval = db.ExecuteNonQuery(Sql);
+            db.Close();
+            return retval;
         }
-
     }
 }

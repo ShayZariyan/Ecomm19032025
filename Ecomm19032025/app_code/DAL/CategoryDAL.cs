@@ -1,109 +1,92 @@
 ﻿using BLL;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
+using System.Data;
+using DATA;
 
 namespace DAL
 {
     public class CategoryDAL
     {
-        private static readonly string ConnStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\EcommDB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True";
-
         public static Category GetByID(int cid)
         {
-            using (SqlConnection Conn = new SqlConnection(ConnStr))
+            DbContext db = new DbContext();
+            string Sql = $"SELECT * FROM T.Category WHERE Cid = {cid}";
+            DataTable dt = db.Execute(Sql);
+            Category tmp = null;
+
+            if (dt.Rows.Count > 0)
             {
-                Conn.Open();
-                string Sql = "SELECT * FROM T.Category WHERE Cid = @Cid";
-                SqlCommand cmd = new SqlCommand(Sql, Conn);
-                cmd.Parameters.AddWithValue("@Cid", cid);
-                SqlDataReader Dr = cmd.ExecuteReader();
-                Category tmp = null;
-                if (Dr.Read())
+                tmp = new Category()
                 {
-                    tmp = new Category()
-                    {
-                        Cid = (int)Dr["Cid"],
-                        Cname = Dr["Cname"].ToString(),
-                        Cdesc = Dr["Cdesc"].ToString()
-                    };
-                }
-                return tmp;
+                    Cid = (int)dt.Rows[0]["Cid"],
+                    Cname = dt.Rows[0]["Cname"].ToString(),
+                    Cdesc = dt.Rows[0]["Cdesc"].ToString()
+                };
             }
+
+            db.Close();
+            return tmp;
         }
 
         public static List<Category> GetAll()
         {
+            DbContext db = new DbContext();
+            string Sql = "SELECT * FROM T.Category";
+            DataTable dt = db.Execute(Sql);
             List<Category> categories = new List<Category>();
 
-            using (SqlConnection Conn = new SqlConnection(ConnStr))
+            foreach (DataRow row in dt.Rows)
             {
-                Conn.Open();
-                string Sql = "SELECT * FROM T.Category";
-                SqlCommand cmd = new SqlCommand(Sql, Conn);
-                SqlDataReader Dr = cmd.ExecuteReader();
-
-                while (Dr.Read())
+                Category tmp = new Category()
                 {
-                    categories.Add(new Category()
-                    {
-                        Cid = (int)Dr["Cid"],
-                        Cname = Dr["Cname"].ToString(),
-                        Cdesc = Dr["Cdesc"].ToString()
-                    });
-                }
+                    Cid = (int)row["Cid"],
+                    Cname = row["Cname"].ToString(),
+                    Cdesc = row["Cdesc"].ToString()
+                };
+                categories.Add(tmp);
             }
 
+            db.Close();
             return categories;
         }
 
         public static void Save(Category c)
         {
-            using (SqlConnection Conn = new SqlConnection(ConnStr))
-            {
-                Conn.Open();
-                string Sql = "INSERT INTO T.Category (Cname, Cdesc) VALUES (@Cname, @Cdesc)";
-                SqlCommand cmd = new SqlCommand(Sql, Conn);
-                cmd.Parameters.AddWithValue("@Cname", c.Cname);
-                cmd.Parameters.AddWithValue("@Cdesc", c.Cdesc);
-                cmd.ExecuteNonQuery();
-            }
-        }
+            DbContext db = new DbContext();
+            string Sql;
 
-        public static void Update(Category c)
-        {
-            using (SqlConnection Conn = new SqlConnection(ConnStr))
+            if (c.Cid == -1)
             {
-                Conn.Open();
-                string Sql = "UPDATE T.Category SET Cname = @Cname, Cdesc = @Cdesc WHERE Cid = @Cid";
-                SqlCommand cmd = new SqlCommand(Sql, Conn);
-                cmd.Parameters.AddWithValue("@Cname", c.Cname);
-                cmd.Parameters.AddWithValue("@Cdesc", c.Cdesc);
-                cmd.Parameters.AddWithValue("@Cid", c.Cid);
-                cmd.ExecuteNonQuery();
+                Sql = $"INSERT INTO T.Category (Cname, Cdesc) " +
+                      $"VALUES (N'{c.Cname}', N'{c.Cdesc}')";
             }
+            else
+            {
+                Sql = $"UPDATE T.Category SET " +
+                      $"Cname = N'{c.Cname}', " +
+                      $"Cdesc = N'{c.Cdesc}' " +
+                      $"WHERE Cid = {c.Cid}";
+            }
+
+            db.ExecuteNonQuery(Sql);
+
+            if (c.Cid == -1)
+            {
+                Sql = $"SELECT MAX(Cid) FROM T.Category WHERE Cname = N'{c.Cname}'";
+                c.Cid = (int)db.ExecuteScalar(Sql);
+            }
+
+            db.Close();
         }
 
         public static int DeleteByID(int cid)
         {
-            string ConnStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\EcommDB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True";
-            using (SqlConnection Conn = new SqlConnection(ConnStr))
-            {
-                Conn.Open();
-                string Sql = "DELETE FROM T.Category WHERE Cid = @Cid";
-                SqlCommand cmd = new SqlCommand(Sql, Conn);
-                cmd.Parameters.AddWithValue("@Cid", cid);
-                int rowsAffected = cmd.ExecuteNonQuery();
-                Conn.Close();
-
-                if (rowsAffected > 0)
-                    return 1;
-                else
-                    return 0;
-            }
+            DbContext db = new DbContext();
+            string Sql = $"DELETE FROM T.Category WHERE Cid = {cid}";
+            int retval = db.ExecuteNonQuery(Sql);
+            db.Close();
+            return retval;
         }
-
     }
 }
