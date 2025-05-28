@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using BLL;
 using System.Security.Cryptography;
+using System.Drawing;
 
 namespace DATA
 {
@@ -18,7 +19,8 @@ namespace DATA
         {
             try
             {
-                ConnStr = @"Data Source=Shay;Initial Catalog=EcomDBS;Integrated Security=True;";
+               
+                string ConnStr = @"Data Source=(LocalDB)\MSSQLLocalDB; AttachDbFilename = C:\Users\Shayz\source\repos\Ecomm19032025\Ecomm19032025\App_Data\EcommDB.mdf;Integrated Security=True;Connect Timeout=30;";
                 Conn = new SqlConnection(ConnStr);
                 Conn.Open();
             }

@@ -11,7 +11,10 @@ namespace Ecomm19032025.AdminManage
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+          /*  if (Session["Login"] == null)
+            {
+                Response.Redirect("/login.aspx");
+            }*/
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Ecomm19032025.AdminManage
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (!IsPostBack)
             {
                 List<Category> lst = Category.GetAll();      // שליפת כל הקטגוריות

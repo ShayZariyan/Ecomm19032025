@@ -24,6 +24,10 @@ namespace BLL
             return UsersDAL.GetAll();
         }
 
+        public static Users CheckLogin(string Email, string Pass)
+        {
+            return UsersDAL.CheckLogin(Email, Pass);
+        }
         public int Save()
         {
             UsersDAL.Save(this);

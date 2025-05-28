@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using DATA;
+using System.Security.Cryptography;
 
 namespace DAL
 {
@@ -90,6 +91,30 @@ namespace DAL
             db.Close();
         }
 
+        public static Users CheckLogin(string Email,string Pass)
+        {
+            DbContext db = new DbContext();
+            string Sql = $"SELECT * FROM T_User WHERE Email = N'{Email}' and Pass=N'{Pass}'";
+            DataTable dt = db.Execute(Sql);
+            Users tmp = null;
+
+            if (dt.Rows.Count ==1)
+            {
+                DataRow row = dt.Rows[0];
+                tmp = new Users()
+                {
+                    Uid = Convert.ToInt32(row["Uid"]+""),
+                    Fname = row["Fname"].ToString()+"",
+                    Email = row["Email"].ToString()+"",
+                    Pass = row["Pass"].ToString() + "",
+                    Address = row["Address"].ToString() + "",
+                    Phone = row["Phone"].ToString() + ""
+                };
+            }
+
+            db.Close();
+            return tmp;
+        }
         public static int DeleteByID(int uid)
         {
             DbContext db = new DbContext();
