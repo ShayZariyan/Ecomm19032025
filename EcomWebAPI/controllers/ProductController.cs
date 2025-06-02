@@ -17,46 +17,22 @@ namespace EcomWebAPI.controllers
             return Product.GetAll();
         }
 
-        // GET: api/Products/5
         public Product Get(int id)
         {
             return Product.GetbyID(id);
         }
 
-        // POST: api/Products?pname=...&price=...&picname=...&pdesc=...&cid=...&status=...
-        public int Post(string pname, float price, string picname, string pdesc, int cid, int status)
+        public int Post([FromBody] Product product)
         {
-            Product p = new Product
-            {
-                Pname = pname,
-                Price = price,
-                Picname = picname,
-                Pdesc = pdesc,
-                Cid = cid,
-                Status = status
-            };
-
-            return p.Save();
+            return product.Save();
         }
 
-        // PUT: api/Products/5?pname=...&price=...&picname=...&pdesc=...&cid=...&status=...
-        public int Put(int id, string pname, float price, string picname, string pdesc, int cid, int status)
+        public int Put(int id, [FromBody] Product product)
         {
-            Product p = new Product
-            {
-                Pid = id,
-                Pname = pname,
-                Price = price,
-                Picname = picname,
-                Pdesc = pdesc,
-                Cid = cid,
-                Status = status
-            };
-
-            return p.Save();
+            product.Pid = id;
+            return product.Save();
         }
 
-        // DELETE: api/Products/5
         public void Delete(int id)
         {
             Product.DeleteByID(id);

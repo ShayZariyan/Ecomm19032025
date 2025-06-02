@@ -16,38 +16,22 @@ namespace EcomWebAPI.controllers
             return Category.GetAll();
         }
 
-        // GET: api/Categories/5
         public Category Get(int id)
         {
             return Category.GetByID(id);
         }
 
-        // POST: api/Categories?cname=Electronics&cdesc=Smart Devices
-        public int Post(string cname, string cdesc)
+        public int Post([FromBody] Category category)
         {
-            Category c = new Category
-            {
-                Cname = cname,
-                Cdesc = cdesc
-            };
-
-            return c.Save();
+            return category.Save();
         }
 
-        // PUT: api/Categories/5?cname=Updated&cdesc=UpdatedDesc
-        public int Put(int id, string cname, string cdesc)
+        public int Put(int id, [FromBody] Category category)
         {
-            Category c = new Category
-            {
-                Cid = id,
-                Cname = cname,
-                Cdesc = cdesc
-            };
-
-            return c.Save();
+            category.Cid = id;
+            return category.Save();
         }
 
-        // DELETE: api/Categories/5
         public void Delete(int id)
         {
             Category.DeleteByID(id);

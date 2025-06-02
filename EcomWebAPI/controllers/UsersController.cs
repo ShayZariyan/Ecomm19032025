@@ -6,58 +6,37 @@ using System.Net.Http;
 using System.Web.Http;
 using BLL;
 
-namespace EcomWebAPI.controllers
-{
-    public class UsersController : ApiController
+
+namespace EcomWebAPI.Controller
     {
-        // GET: api/Users
-        public List<Users> Get()
+        public class UsersController : ApiController
         {
-            return Users.GetAll();
-        }
-
-        // GET: api/Users/5
-        public Users Get(int id)
-        {
-            return Users.GetByID(id);
-        }
-
-        // POST: api/Users
-        public int Post(string fname, string email, string pass, string address, string phone)
-        {
-            Users u = new Users
+            public List<Users> Get()
             {
-                Fname = fname,
-                Email = email,
-                Pass = pass,
-                Address = address,
-                Phone = phone
-            };
+                return Users.GetAll();
+            }
 
-            return u.Save();
-        }
-
-        // PUT: api/Users/5
-        public int Put(int id, string fname, string email, string pass, string address, string phone)
-        {
-            Users u = new Users
+            public Users Get(int id)
             {
-                Uid = id,
-                Fname = fname,
-                Email = email,
-                Pass = pass,
-                Address = address,
-                Phone = phone
-            };
+                return Users.GetByID(id);
+            }
 
-            return u.Save();
-        }
+            public int Post([FromBody] Users user)
+            {
+                return user.Save();
+            }
 
-        // DELETE: api/Users/5
-        public void Delete(int id)
-        {
-            Users.DeleteByID(id);
+            public int Put(int id, [FromBody] Users user)
+            {
+                user.Uid = id;
+                return user.Save();
+            }
+
+            public void Delete(int id)
+            {
+                Users.DeleteByID(id);
+            }
         }
     }
-}
+
 
